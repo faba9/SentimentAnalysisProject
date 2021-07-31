@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="HandheldFriendly" content="true">
+
+	<title>Sentiment Analysis</title>
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<script src="/static/css/jquery-1.12.4.min.js"></script>
+	
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="/static/css/jquery.easypiechart.js"></script>
+	<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+
+</head>
+
+
+<body>
+	<!--Header side-->
+	<header>
+		<img id="img" src="/static/RA.png">
+		<div id='menu'><li class='fas fa-bars'></li></div>
+		<div id='backdrop'></div>
+		<div class='content'>
+			<a href='#sa'>Home</a>
+			<a href=#work>How it works</a>
+			<a href='#about'>About us</a>
+			<a href='#contact'>Contact</a>
+		</div>
+	</header>
+	<div id='space' style='height: 120px'></div>
+	<!-- Sections side -->
+
+	<section>
+		<div class='sa' id='sa'>
+			::after
+			
+			<div class='contain'>
+				<h1>Reviews Analyzer</h1>
+				<p>An API for Receiving And Analyzing Data Of Amazon Products Reviews.
+				</p>
+				<div class=ana id='ana'>
+					<form method="POST" onsubmit='return false'>
+						<label for='productName'>Enter The Phone Name:</label><br><br>
+						<input autocomplete="off" type="text" id='productName' name='productName' onkeydown="ac()">
+						<div id='sugg'>
+						</div>
+						<br><br>
+						<button onclick='analyze()'>ANALYZE</button>				  
+					</form>
+					<div id='loading-container'>
+						<div id='loading'>
+							Analyze ...
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<br/>
+		<br/>
+		<div class='wrong' id='wrong' style='display: none;'>
+			<h3>Product Not found</h3>
+			<p>Make sure that you entered the product name correctly</p>
+		</div>
+		<br/>
+		<br/>
+		<div class='result' id='r' style='display: none'>
+
+			<div class='info'>
+				Here The Sentiment Analysis Information
+				<p>About <span id='prd-name'></span> Product</p>
+
+				<div class='correct'>
+					<div class='container'>
+
+						<div class='box'>
+							<div class='chart' id='pos-percent' data-percent=""></div>
+							<h2>Positive Reviews</h2>
+						</div>
+
+						<div class='box'>
+							<div class='chart' id='neg-percent' data-percent=""></div>
+							<h2>Negative Reviews</h2>
+						</div>
+
+						<div class='box'>
+							<div class='chart' id='nat-percent' data-percent=""></div>
+							<br>
+							<h2>Natural Reviews</h2>
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class='clouds'>
+					<div class='p-cloud'>
+						<h3>Common Words In Reviews</h3>
+						<div class='wc-img-cont'>
+							<img id='word1-cloud' src=""/>
+						</div>
+					</div>
+				</div>
+
+				<div class='over-view'>
+					<h2>Overview About The Phone Brand <span id='brand-name'></span></h2>
+					<ul>
+						<li>
+							<h4>Reviews About this brand</h4>
+							<p data-value='pos-brand'>Positive</p>
+							<progress max="100" id='pos-brand' data-brand='' >
+								<div class="progress-bar">
+									<span id='pos-brand' data-brand=''></span>
+								</div>
+							</progress>
+
+							<!-- negative reviews -->
+							<p>Negative</p>
+							<progress max="100" id='neg-brand' data-brand=''>
+								<div class="progress-bar">
+									<span id='neg-brand' data-brand=''></span>
+								</div>
+							</progress>
+
+							<!-- natural reviews -->
+							<p>Natural</p>
+							<progress max="100" id='nat-brand' data-brand=''>
+								<div class="progress-bar">
+									<span id='nat-brand' data-brand=''></span>
+								</div>
+							</progress>
+
+						</li>
+
+						<li>
+							<h4>Average Prices In This Brand</h4>
+							<!-- Less than or equal to 100 -->
+							<p>100$ or less</p>
+							<progress max="100" id='priceone-brand' data-brand='' value=''>
+								<div class="progress-bar">
+									<span id='priceone-brand' data-brand=''></span>
+								</div>
+							</progress>
+
+							<!-- Less than or equal to 500 -->
+							<p>500$ or less</p>
+							<progress max="100" id='pricetwo-brand' data-brand='' value=''>
+								<div class="progress-bar">
+									<span id='pricetwo-brand' data-brand=''></span>
+								</div>
+							</progress>
+
+							<!-- Less than or equal to 1000 -->
+							<p>1000$ Or less</p>
+							<progress max="100" id='pricethree-brand' data-brand='' value=''>
+								<div class="progress-bar">
+									<span id='pricethree-brand' data-brand=''></span>
+								</div>
+							</progress>
+
+							<!-- greater than 1000 -->
+							<p>1000$ Or Up</p>
+							<progress max="100" id='pricefour-brand' data-brand='' value=''>
+								<div class="progress-bar">
+									<span id='pricefour-brand' data-brand=''></span>
+								</div>
+							</progress>
+
+						</li>
+					</ul>
+				</div>
+				
+				<div class='reviews'>
+					<h3>Samples Of Positive Reviews<i class="fas fa-thumbs-up"></i></h3>
+					<ul id='pos-rev'></ul>
+					<h3 id=h>Samples Of Negative Reviews<i class="fas fa-thumbs-down" ></i></h3>
+					<ul id='neg-rev'></ul>
+				</div>
+				
+			</div>
+		</div>
+
+		<div id=work>
+			<h3>How It Works</h3>
+			<p>Reviews Analysis tools attempt to extract the data from reviews about <span>amazon phones products</span> , tags, sentiment, and more from a valid phone name.<br>
+				In this web page We have used the <span>neural network algorithm</span> to analyze the sentiment of the reviews.</p>
+				<h4>Tools Used</h4>
+				<ul>The underlying algorithms are:
+					<li><a href='https://en.wikipedia.org/wiki/Long_short-term_memory' target="_blank">LSTM</a> neural network</li>
+					<li>Social Sentiment Analysis:<br><p>assigns sentiment ratings of "positive", "negative" and "neutral"</p></li>
+					<li>Get reviews:<br><p>scrapes the amazon website for all the phone products and returns them as data</p></li>
+				</ul>
+			</div>
+
+			<div id='about'>
+				<h3>About Us</h3>
+				<img id='about-logo' src='/static/kau.png'/>
+				<p>A student from <span>King Abdulaziz University</span> majoring in <span>Management Information Systems</span>
+				</p>
+				<p>I have created this page to implement Neural Network technology to conduct sentiment analysis of Amazon products to help anyone want general information about phones on Amazon by giving this information such as the percentage of positive, negative, and natural reviews.</p>
+			</div>
+			
+		</section>
+		<footer>
+			<div id='contact'>
+				<h3>Contact</h3>
+				<ul>
+					<li>Twitter: @reviewsAnalyzer <i class="fa fa-twitter"></i></li>
+					<li>Facebook: reviewsAnalyzer <i class="fa fa-facebook"></i></li>
+					<li>Instagram: @reviewsAnalyzer <i class="fa fa-instagram"></i></li>
+				</ul>
+			</div>
+			<p>Copyright 2020 &copy; all right reserved  &nbsp;  &nbsp;  &nbsp; Developed by: <a href="https://twitter.com/H101_py?s=20" target="_blank">مبرمجة بايثون</a></p>
+		</footer>
+		<script>
+			function goToByScroll(id) {
+		    // Scroll
+		    $('html,body').animate({
+		    	scrollTop: $("#" + id).offset().top
+		    }, 'slow');
+		}
+		$.get('/names', (resp) => {
+			window.names = resp.names;
+			console.log(names.length);
+			let pre = window.names.map(name => {
+				return '<p class="sugg-element">' + name + '</p>';
+			});
+			$('#sugg').html(pre);
+			$('.sugg-element').on('click', function(e) {
+				$('#productName').val($(this).text());
+				$('#sugg').hide();
+			});
+		})
+		$('#productName').focus(() => {
+			$('#sugg').show();
+			window.suggDisplay = 'block';
+			
+		})
+		$('#sugg').mouseleave(() => {
+			if(window.suggDisplay == 'block'){
+				$('#sugg').hide();
+				window.suggDisplay == 'none';
+			}
+		})
+		function ac(){
+			$('#sugg').show();
+			let s = $('#productName').val().toLowerCase();
+			let filtered = (window.names || []).filter(
+				// n => n.toLowerCase().indexOf(s) >= 0
+				n => n.toLowerCase().startsWith(s)
+				);
+			let pre = filtered.map(name => {
+				return '<p class="sugg-element">' + name + '</p>';
+			});
+			$('#sugg').html(pre);
+			$('.sugg-element').on('click', function(e) {
+				$('#productName').val($(this).text());
+				$('#sugg').hide();
+			});
+
+		}
+
+
+		function analyze(){
+			let productName = $('#productName').val();
+
+			$.ajax({
+				type: 'POST',
+				url: '/analyze',
+				data: {
+					productName
+				},
+				beforeSend: () => {
+					
+					$('#loading-container').css('display', 'flex');
+					$('#r').hide();
+					$('#wrong').hide();
+					// goToByScroll('loading');
+				}
+			}).then(data => {
+				console.log(data);
+				$('#work').hide();
+				$('#about').hide();
+				$('#loading-container').css('display', 'none');
+				$('#prd-name').text(productName);
+				if(!data.status){
+					$('#wrong').show();
+					$('#work').show();
+					$('#about').show();
+					$('#r').hide();
+					goToByScroll('wrong');
+				}else{
+					$('#r').show();
+					$('#wrong').hide();
+					$('#work').show();
+					$('#about').show();
+
+					$('#pos-percent').html('<span>' + data.data[0] + '%' + '</span>');
+					$('#pos-percent').attr('data-percent', data.data[0]);
+
+					$('#neg-percent').html('<span>' + data.data[1] + '%' + '</span>');
+					$('#neg-percent').attr('data-percent', data.data[1]);
+
+					$('#nat-percent').html('<span>' + data.data[2] + '%' + '</span>');
+					$('#nat-percent').attr('data-percent', data.data[2]);
+
+					$('#pos-rev').html(
+						data.pos.map(rev => '<img class="rev-img" src="/static/unknown1.png"/><li>' + rev + '</li>').join('<br/>')
+						);
+
+
+					$('#neg-rev').html(
+						data.neg.map(rev => '<img class="rev-img" src="/static/unknown1.png"/><li>' + rev + '</li>').join('<br/>')
+						);
+
+					$('#brand-name').text(data.brand);
+
+					$('#priceone-brand').val(data.price_avr[0]);
+					$('#pricetwo-brand').val(data.price_avr[1]);
+					$('#pricethree-brand').val(data.price_avr[2]);
+					$('#pricefour-brand').val(data.price_avr[3]);
+
+					$('#pos-brand').val(data.reviews_brand[0]);
+					$('#neg-brand').val(data.reviews_brand[1]);
+					$('#nat-brand').val(data.reviews_brand[2]);
+
+					$('#word1-cloud').attr('src', data.cloud);
+					
+					$('.chart').easyPieChart({
+						// size: 180,
+						barColor: '#1f8fa3',
+						scaleColor: false,
+						lineWidth:8,
+						trackColor:'#373737',
+						animate : 1500
+					});
+					goToByScroll('r');
+				}
+			});
+		}
+
+		$('#menu').on('click', () => {
+			if($('.content').css('display') == 'none'){
+				$('.content').css('display', 'flex');
+				$('#backdrop').css('display', 'block');
+			}
+		})
+
+		$('#backdrop, .content a').on('click', ()=> {
+			$('.content').css('display', 'none');
+			$('#backdrop').css('display', 'none');
+		})
+	</script>
+</body>
+</html>

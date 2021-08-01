@@ -6,31 +6,11 @@ app = Flask('amazon reviews', static_folder='static',)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-	cls = ''
-	productName = ''
-	#if request.method == 'POST':
-		# OLD
-		# productName = request.form.get('text', '')
-		# NEW : (You should write the input name , not the input type)
-		# so ... input name in HTML page is product Name , and not text
-	#	productName = request.form.get('productName', '')
-	#	cls = user_order(productName)
-	#	if type(cls) == list:
-	#		pos, neg, nat = cls
-	#		return render_template('index.html', data={'productName': productName, 'pos':pos,'neg':neg,'nat':nat})
-	#	else:
-	#		return render_template('index.html',data=cls)
-	#else:
 	return render_template('index2.html')
-
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
 	productName = ''
-	# OLD
-	# productName = request.form.get('text', '')
-	# NEW : (You should write the input name , not the input type)
-	# so ... input name in HTML page is product Name , and not text
 	productName = request.form.get('productName', '')
 	cls = user_order(productName)
 
